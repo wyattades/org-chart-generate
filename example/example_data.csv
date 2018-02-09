@@ -1,0 +1,16 @@
+EmployeeID,ManagerID,FirstName,LastName,Role,Phone,Email,ImageURL
+1,,Kevin,Peets,CEO,(555) 111-1111,KevinPeets@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+2,1,Peter,McGee,VP Sales,(555) 222-2222,PeterMcGee@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+3,1,Wallace,Stone,VP Product,(555) 333-3333,WallaceStone@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+4,3,Ruth,Marr,Software Developer,(555) 444-4444,RuthMarr@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+5,3,Judith,Ng,UX Designer,(555) 555-5555,JudithNg@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+6,2,Kevin,Peets,CEO,(555) 111-1111,KevinPeets@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+7,1,Peter,McGee,VP Sales,(555) 222-2222,PeterMcGee@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+8,1,Wallace,Stone,VP Product,(555) 333-3333,WallaceStone@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+9,3,Ruth,Marr,Software Developer,(555) 444-4444,RuthMarr@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+10,6,Judith,Ng,UX Designer,(555) 555-5555,JudithNg@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+11,6,Kevin,Peets,CEO,(555) 111-1111,KevinPeets@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+12,7,Peter,McGee,VP Sales,(555) 222-2222,PeterMcGee@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+13,8,Wallace,Stone,VP Product,(555) 333-3333,WallaceStone@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+14,1,Wombat,MarAdasdasdr,Software Developer,(555) 444-4444,RuthMarr@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
+15,10,Judith,Ng,UX Designer,(555) 555-5555,JudithNg@fakecompany.com,https://www.w3schools.com/howto/img_avatar2.png
