@@ -12,13 +12,14 @@
   height: 700px;
   background-color: #EEE;
   overflow: auto;
-  cursor: move;
-  /* cursor: -webkit-grab;   */
+  cursor: pointer;
+  cursor: -webkit-grab;  
 }
-/* .orgchart:active {
-  cursor: move;
+
+.orgchart:active {
+  cursor: pointer;
   cursor: -webkit-grabbing;
-} */
+}
 
 .google-visualization-orgchart-linenode {
   border-width: 2px !important;
@@ -39,45 +40,29 @@
 
   background-image: none;
   background-color: #FFF;
-  padding: 12px !important;
   border-radius: 4px;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
   transition: box-shadow 0.5s;
+}
+
+.orgchart-node {
+  padding: 12px !important;
 }
 
 .orgchart-node:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
-/* .orgchart-node img {
-  width: 180px;
-  height: 90px;
-  object-fit: cover;
-  display: block;
-  padding: 0;
-  margin: 0;
-  height:0;width:0;
-  
-  border: none;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-} */
+.orgchart-node p, .orgchart-legend p {
+  font-size: 20px;
+  font-weight: 400;
+}
 
 .orgchart-node p:nth-last-child(2) {
-  font-weight: 600;
-  font-size: 20px;
-  /* padding: 16px;
-  padding-bottom: 0; */
+  /* font-size: 20px; */
+}
 
-}
-.orgchart-node p:last-child {
-  font-weight: 400;
-  font-style: italic;
-  /* font-size: 16px;
-  padding: 16px; */
-}
 .orgchart-node.orgchart-node-selected {
-  /* background-color: #EEE; */
   background-color: rgb(255, 255, 141);
 }
 
@@ -90,15 +75,22 @@
   position: absolute;
   right: 32px;
   bottom: 32px;
-  height: 150px;
-  width: 200px;
+  width: 400px;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
 
-  text-align: center;
-  font-weight: bold;
   transition: opacity 0.3s;
+}
+.orgchart-legend p {
+  padding: 12px;
+  margin: 0;
 }
 
 .orgchart-legend img {
-  width: 80px;
-  height: auto;
+  width: 120px;
+  height: 100%;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  /* object-fit: contain; */
 }
