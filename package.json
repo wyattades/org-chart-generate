@@ -1,0 +1,23 @@
+{
+  "name": "org-chart-module",
+  "scripts": {
+    "build": "gulp"
+  },
+  "dependencies": {
+    "dragscroll": "0.0.8",
+    "papaparse": "^4.3.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "browserify": "^16.1.0",
+    "event-stream": "^3.3.4",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^3.0.0",
+    "vinyl-source-stream": "^2.0.0"
+  }
+}
