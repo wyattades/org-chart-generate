@@ -56,7 +56,6 @@ module.exports = (arrayData, elementId) => {
         ];
       }),
     ]);
-    console.log(data);
 
     // Remove any existing children
     while (parent.firstChild) myNode.removeChild(parent.firstChild);
