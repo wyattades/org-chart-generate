@@ -21,5 +21,6 @@ const parseCsv = (url) => new Promise((resolve, reject) => {
 
 module.exports = (url, elementId) => {
   parseCsv(url)
-  .then(arrayData => embedOrgChart(arrayData, elementId));
+  .then(arrayData => embedOrgChart(arrayData, elementId))
+  .catch(console.error);
 };

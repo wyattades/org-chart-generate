@@ -40,7 +40,7 @@ module.exports = (arrayData, elementId) => {
   // Wait google charts callback, then create chart with data
 
   new Promise(resolve => google.charts.setOnLoadCallback(() => resolve()))
-  .then((arrayData) => {
+  .then(() => {
 
     const data = new google.visualization.arrayToDataTable([
       [
