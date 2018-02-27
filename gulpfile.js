@@ -18,16 +18,29 @@ gulp.task('js', () => {
       })))
       .pipe(streamify(uglify()))
       .pipe(gulp.dest('./dist/'))
-      .on('error', err => console.error(err));
+      .on('error', console.error);
   });
 
   return es.merge.apply(null, tasks);
 });
 
+gulp.task('drupal', () => {
+  return browserify('./src/orgchartDrupal.js')
+    .bundle()
+    .pipe(source('orgchartDrupal.js')) 
+    .pipe(streamify(babel({
+      presets: ['env', 'stage-0'],
+    })))
+    .pipe(streamify(uglify()))
+    .pipe(gulp.dest('./dist/'))
+    .on('error', console.error);
+});
+
 gulp.task('css', () => {
   return gulp.src('./src/*.css')
     .pipe(cleanCSS({ compatibility: 'ie8' }))
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest('./dist/'))
+    .on('error', console.error);    
 });
 
-gulp.task('default', ['js', 'css']);
+gulp.task('default', ['js', 'css', 'drupal']);

@@ -1,25 +1,24 @@
 const dragscroll = require('dragscroll');
 
-if (!google || !google.charts)
-  throw new Error('Must include google script loader: https://www.gstatic.com/charts/loader.js')
+if (!window.google || !window.google.charts)
+  throw new Error('Must include google script loader: https://www.gstatic.com/charts/loader.js');
 
 google.charts.load('current', { packages: ['orgchart'] });
 
 // Helper functions:
 
-const formatData = ({ FirstName, LastName, Role, Phone, Email, ImageURL }) => {
+const formatData = ({ Name, Role, Phone, Email, ImageURL }) => {
   return `\
-<p><strong>${FirstName} ${LastName}</strong></p>\
+<p><strong>${Name || '<name>'}</strong></p>\
 <p><em>${Role}</em></p>`;
 };
 
-const formatLegend = ({ FirstName, LastName, Role, Phone, Email, ImageURL }) => {
-  const name = `${FirstName} ${LastName}`;
-  return `\
-<img src="${ImageURL}" alt="${name}">
-<div>
-<p><strong>${name}</strong></p>\
-<p><em>${Role}</em></p>
+const formatLegend = ({ Name, Role, Phone, Email, ImageURL, Link }) => {
+  return (ImageURL ? `<img src="${ImageURL}" alt="${Name}">` : '') +
+`<div>\
+<p><strong>${Name}</strong></p>\
+<p><em>${Role}</em></p>\
+${Link ? `<a href="${Link}" title="${Name} Account Page"></a>` : ''}\
 </div>`;
 };
 
@@ -32,9 +31,50 @@ module.exports = (arrayData, elementId) => {
   let hovered = null;
 
   const parent = document.getElementById(elementId);
-  if (!parent)   {
+  if (!parent) {
     console.error(`OrgChart: no element with id '${elementId}'`);
     return;
+  }
+
+  // Remove any existing children
+  while (parent.firstChild) myNode.removeChild(parent.firstChild);
+  parent.style.position = 'relative';
+
+  const el = document.createElement('div');
+  el.classList.add('dragscroll', 'orgchart');
+  parent.appendChild(el);
+
+  const legend = document.createElement('div');
+  legend.classList.add('orgchart-legend', 'disabled');
+  parent.appendChild(legend);
+
+  const setLegend = (newSelected, newHovered) => {
+    if (newSelected !== false) selected = newSelected;
+
+    const newData = newHovered || selected;
+    if (newData) {
+      legend.innerHTML = formatLegend(newData);
+
+      legend.classList.remove('disabled');          
+    } else {
+      legend.classList.add('disabled');
+    }
+  };
+
+  if (!arrayData || arrayData.length === 0) {
+    el.classList.add('invalid-data-provided');
+    console.error('Orgchart Error: undefined or empty user data provided');
+    return;
+  }
+
+  const persons = {};
+  for (const rowData of arrayData) persons[rowData.EmployeeID] = true;
+  for (const rowData of arrayData) {
+    const manager = rowData.ManagerID;
+    if (manager && !(manager in persons)) {
+      console.error(`Orgchart Error: employee '${rowData.EmployeeID}' has undefined manager '${manager}'`);
+      delete rowData.ManagerID;
+    }
   }
 
   // Wait google charts callback, then create chart with data
@@ -56,34 +96,6 @@ module.exports = (arrayData, elementId) => {
         ];
       }),
     ]);
-
-    // Remove any existing children
-    while (parent.firstChild) myNode.removeChild(parent.firstChild);
-    parent.style.position = 'relative';
-
-    const el = document.createElement('div');
-    el.classList.add('dragscroll', 'orgchart');
-    parent.appendChild(el);
-
-    const legend = document.createElement('div');
-    legend.classList.add('orgchart-legend', 'disabled');
-    // legend.appendChild(document.createElement('img'));
-    // legend.appendChild(document.createElement('p'));
-    parent.appendChild(legend);
-
-    const setLegend = (newSelected, newHovered) => {
-      if (newSelected !== false) selected = newSelected;
-      console.log(newSelected, newHovered);
-
-      const newData = newHovered || selected;
-      if (newData) {
-        legend.innerHTML = formatLegend(newData);
-
-        legend.classList.remove('disabled');          
-      } else {
-        legend.classList.add('disabled');
-      }
-    };
 
     const chart = new google.visualization.OrgChart(el);
 

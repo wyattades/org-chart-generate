@@ -21,13 +21,26 @@
   cursor: -webkit-grabbing;
 }
 
+.orgchart.invalid-data-provided::after {
+  display: block;
+  font-size: 24px;  
+  text-align: center;
+  width: 100%;
+  margin-top: 2em;
+  content: 'Invalid user data provided'; 
+}
+
 .google-visualization-orgchart-linenode {
   border-width: 2px !important;
   border-color: #00458c !important;
 }
 
 .google-visualization-orgchart-table {
+  /* Override drupal table defaults */
+  border-collapse: separate;  
   padding: 48px;
+  margin-bottom: 0;
+  width: auto;
 }
 
 .orgchart-node, .orgchart-legend {
@@ -36,10 +49,9 @@
   -ms-user-select: text;
   user-select: text;
 
-  cursor: auto;  
-
   background-image: none;
   background-color: #FFF;
+  border: none;
   border-radius: 4px;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
   transition: box-shadow 0.5s;
@@ -47,6 +59,7 @@
 
 .orgchart-node {
   padding: 12px !important;
+  cursor: pointer;
 }
 
 .orgchart-node:hover {
@@ -58,20 +71,16 @@
   font-weight: 400;
 }
 
-.orgchart-node p:nth-last-child(2) {
-  /* font-size: 20px; */
-}
-
 .orgchart-node.orgchart-node-selected {
   background-color: rgb(255, 255, 141);
 }
 
 .orgchart-legend.disabled {
   opacity: 0;
+  visibility: hidden;
 }
 
 .orgchart-legend {
-  pointer-events: none;
   position: absolute;
   right: 32px;
   bottom: 32px;
@@ -80,7 +89,8 @@
   flex-direction: row;
   padding: 0;
 
-  transition: opacity 0.3s;
+  cursor: auto;
+  transition: opacity 0.3s, visibility 0.3s;
 }
 .orgchart-legend p {
   padding: 12px;
@@ -93,4 +103,13 @@
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   /* object-fit: contain; */
+}
+
+.orgchart-legend a {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23bbbbbb' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/%3E%3C/svg%3E");
 }
