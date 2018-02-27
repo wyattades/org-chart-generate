@@ -1,19 +1,20 @@
 const dragscroll = require('dragscroll');
 
 if (!window.google || !window.google.charts)
-  throw new Error('Must include google script loader: https://www.gstatic.com/charts/loader.js');
+  throw new Error('Orgchart: Must include google script loader: ' + 
+    'https://www.gstatic.com/charts/loader.js');
 
 google.charts.load('current', { packages: ['orgchart'] });
 
 // Helper functions:
 
-const formatData = ({ Name, Role, Phone, Email, ImageURL }) => {
+const formatData = ({ Name = '', Role = '', Phone = '', Email = '', ImageURL = '' }) => {
   return `\
 <p><strong>${Name || '<name>'}</strong></p>\
 <p><em>${Role}</em></p>`;
 };
 
-const formatLegend = ({ Name, Role, Phone, Email, ImageURL, Link }) => {
+const formatLegend = ({ Name = '', Role = '', Email = '', ImageURL = '', Link = '' }) => {
   return (ImageURL ? `<img src="${ImageURL}" alt="${Name}">` : '') +
 `<div>\
 <p><strong>${Name}</strong></p>\
@@ -22,22 +23,30 @@ ${Link ? `<a href="${Link}" title="${Name} Account Page"></a>` : ''}\
 </div>`;
 };
 
+const getElement = (el) => {
+  if (typeof el === 'string') return document.getElementById(el);
+  else if (typeof HTMLElement === 'object' ? el instanceof HTMLElement :
+      (el && typeof el === 'object' && el !== null && 
+      el.nodeType === 1 && typeof el.nodeName === 'string')) return el;
+  else return null;
+};
+
 // embedOrgChart
-module.exports = (arrayData, elementId) => {
+module.exports = (arrayData, element) => {
 
   // Local variables:
 
   let selected = null;
   let hovered = null;
 
-  const parent = document.getElementById(elementId);
+  const parent = getElement(element);
   if (!parent) {
-    console.error(`OrgChart: no element with id '${elementId}'`);
+    console.error('OrgChart: invalid element or id provided');
     return;
   }
 
   // Remove any existing children
-  while (parent.firstChild) myNode.removeChild(parent.firstChild);
+  while (parent.firstChild) parent.removeChild(parent.firstChild);
   parent.style.position = 'relative';
 
   const el = document.createElement('div');
@@ -72,7 +81,8 @@ module.exports = (arrayData, elementId) => {
   for (const rowData of arrayData) {
     const manager = rowData.ManagerID;
     if (manager && !(manager in persons)) {
-      console.error(`Orgchart Error: employee '${rowData.EmployeeID}' has undefined manager '${manager}'`);
+      console.error(`Orgchart Error: employee '${rowData.EmployeeID}' \
+has undefined manager '${manager}'`);
       delete rowData.ManagerID;
     }
   }

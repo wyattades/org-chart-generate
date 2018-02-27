@@ -8,9 +8,9 @@ const browserify = require('browserify');
 const es = require('event-stream');
 
 gulp.task('js', () => {
-  const tasks = ['orgchart.js', 'orgchartCSV.js']
-  .map(entry => {
-    return browserify('./src/' + entry, { standalone: 'embedOrgChart' })
+  const tasks = ['orgchart.js', 'orgchartCSV.js', 'orgchartDrupal7.js', 'orgchartDrupal8.js']
+  .map((entry, i) => {
+    return browserify('./src/' + entry, i < 2 ? { standalone: 'embedOrgChart' } : {})
       .bundle()
       .pipe(source(entry)) 
       .pipe(streamify(babel({
@@ -24,18 +24,6 @@ gulp.task('js', () => {
   return es.merge.apply(null, tasks);
 });
 
-gulp.task('drupal', () => {
-  return browserify('./src/orgchartDrupal.js')
-    .bundle()
-    .pipe(source('orgchartDrupal.js')) 
-    .pipe(streamify(babel({
-      presets: ['env', 'stage-0'],
-    })))
-    .pipe(streamify(uglify()))
-    .pipe(gulp.dest('./dist/'))
-    .on('error', console.error);
-});
-
 gulp.task('css', () => {
   return gulp.src('./src/*.css')
     .pipe(cleanCSS({ compatibility: 'ie8' }))
@@ -43,4 +31,4 @@ gulp.task('css', () => {
     .on('error', console.error);    
 });
 
-gulp.task('default', ['js', 'css', 'drupal']);
+gulp.task('default', ['js', 'css']);

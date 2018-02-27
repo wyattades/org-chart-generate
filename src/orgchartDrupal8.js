@@ -1,6 +1,6 @@
 const embedOrgChart = require('./orgchart');
 
-var $ = jQuery;
+const $ = window.jQuery;
 $(() => {  
   const arrayData = $('#orgchart-userdata article[typeof="schema:Person"]').toArray().map(el => {
     const $el = $(el);
