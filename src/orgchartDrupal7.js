@@ -14,8 +14,6 @@ $(() => {
       const res = {
         EmployeeID,
         ManagerID: $el.find('.field-name-field-manager .field-item').first().text(),        
-        // Name: $el.find('label[value|="First Name"] + .itemlist').first().text().trim(),
-        // Email: $el.find('label[value|="Primary E-Mail Address"] + .itemlist').first().text().trim(), 
         Role: $el.find('.field-name-field-role .field-item').first().text(),
         ImageURL: $el.find('.field-name-field-image .field-item img').first().attr('src'),
         Link: `/user/${EmployeeID}`,
@@ -26,9 +24,9 @@ $(() => {
         const $item = $(item);
         const label = $item.prev('label').text();
         if (label && label.length > 0) {
-          if (label.startsWith('Full Name')) res.Name = $item.find('li').first().text().trim();
-          else if (label.startsWith('Title')) res.Role = $item.find('li').first().text().trim();
-          else if (label.startsWith('Primary E-Mail Address')) res.Email = $item.find('li').first().text().trim();
+          if (label.startsWith(/Full\s+Name/i)) res.Name = $item.find('li').first().text().trim();
+          else if (label.startsWith(/Title/i)) res.Role = $item.find('li').first().text().trim();
+          else if (label.startsWith(/Primary\s+E.?Mail\s+Address/i)) res.Email = $item.find('li').first().text().trim();
         }
       });
 

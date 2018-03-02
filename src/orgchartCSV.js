@@ -19,11 +19,10 @@ const parseCsv = (url) => new Promise((resolve, reject) => {
   });
 });
 
-module.exports = (url, elementId) => {
+module.exports = (url, element) => {
   parseCsv(url)
   .then(arrayData => {
-    console.log('arrayData: ', arrayData);
-    embedOrgChart(arrayData, elementId);
+    embedOrgChart(arrayData, element);
   })
   .catch(console.error);
 };

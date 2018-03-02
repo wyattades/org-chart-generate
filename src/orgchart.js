@@ -8,18 +8,18 @@ google.charts.load('current', { packages: ['orgchart'] });
 
 // Helper functions:
 
-const formatData = ({ Name = '', Role = '', Phone = '', Email = '', ImageURL = '' }) => {
-  return `\
-<p><strong>${Name || '<name>'}</strong></p>\
+const formatData = ({ Name = '', Role = '' }) => {
+  return `<p><strong>${Name}</strong></p>\
 <p><em>${Role}</em></p>`;
 };
 
 const formatLegend = ({ Name = '', Role = '', Email = '', ImageURL = '', Link = '' }) => {
-  return (ImageURL ? `<img src="${ImageURL}" alt="${Name}">` : '') +
-`<div>\
+  return `${ImageURL ? `<img src="${ImageURL}" alt="${Name}">` : ''}\
+<div>\
 <p><strong>${Name}</strong></p>\
 <p><em>${Role}</em></p>\
-${Link ? `<a href="${Link}" title="${Name} Account Page"></a>` : ''}\
+${Email ? `<p><a class="orgchart-legend-email" href="mailto:${Email}">${Email}</a></p>` : ''}\
+${Link ? `<a class="orgchart-legend-link" href="${Link}" title="${Name} Account Page"></a>` : ''}\
 </div>`;
 };
 
@@ -39,6 +39,7 @@ module.exports = (arrayData, element) => {
   let selected = null;
   let hovered = null;
 
+  // Verify given element
   const parent = getElement(element);
   if (!parent) {
     console.error('OrgChart: invalid element or id provided');
@@ -57,18 +58,7 @@ module.exports = (arrayData, element) => {
   legend.classList.add('orgchart-legend', 'disabled');
   parent.appendChild(legend);
 
-  const setLegend = (newSelected, newHovered) => {
-    if (newSelected !== false) selected = newSelected;
-
-    const newData = newHovered || selected;
-    if (newData) {
-      legend.innerHTML = formatLegend(newData);
-
-      legend.classList.remove('disabled');          
-    } else {
-      legend.classList.add('disabled');
-    }
-  };
+  // Perform validity checks on the given data
 
   if (!arrayData || arrayData.length === 0) {
     el.classList.add('invalid-data-provided');
@@ -86,6 +76,19 @@ has undefined manager '${manager}'`);
       delete rowData.ManagerID;
     }
   }
+
+  const setLegend = (newSelected, newHovered) => {
+    if (newSelected !== false) selected = newSelected;
+
+    const newData = newHovered || selected;
+    if (newData) {
+      legend.innerHTML = formatLegend(newData);
+
+      legend.classList.remove('disabled');          
+    } else {
+      legend.classList.add('disabled');
+    }
+  };
 
   // Wait google charts callback, then create chart with data
 
@@ -123,6 +126,7 @@ has undefined manager '${manager}'`);
       setLegend(false, null);
     });
 
+    // Draw charts
     chart.draw(data, {
       allowHtml: true,
       selectedNodeClass: 'orgchart-node-selected',
@@ -131,6 +135,7 @@ has undefined manager '${manager}'`);
       size: 'large',
     });
 
+    // Have to reset dragscroll module so it can find our orgchart DOM element
     dragscroll.reset();
   })
   .catch(console.error);

@@ -1,8 +1,8 @@
 const gulp = require('gulp');
 const streamify = require('gulp-streamify');
-const uglify = require('gulp-uglify');
-const babel = require('gulp-babel');
+const uglify = require('gulp-uglify-es').default;
 const cleanCSS = require('gulp-clean-css');
+const sass = require('gulp-sass');
 const source = require('vinyl-source-stream');
 const browserify = require('browserify');
 const es = require('event-stream');
@@ -13,9 +13,6 @@ gulp.task('js', () => {
     return browserify('./src/' + entry, i < 2 ? { standalone: 'embedOrgChart' } : {})
       .bundle()
       .pipe(source(entry)) 
-      .pipe(streamify(babel({
-        presets: ['env', 'stage-0'],
-      })))
       .pipe(streamify(uglify()))
       .pipe(gulp.dest('./dist/'))
       .on('error', console.error);
@@ -25,10 +22,15 @@ gulp.task('js', () => {
 });
 
 gulp.task('css', () => {
-  return gulp.src('./src/*.css')
+  return gulp.src('./src/orgchart.scss')
+    .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest('./dist/'))
     .on('error', console.error);    
+});
+
+gulp.task('watch', () => {
+  gulp.watch('./src/*', ['js', 'css']);
 });
 
 gulp.task('default', ['js', 'css']);
