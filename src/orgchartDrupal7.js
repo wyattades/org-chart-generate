@@ -22,17 +22,18 @@ $(() => {
       const $items = $el.find('.form-item.form-type-item > .item-list');
       $items.each((i, item) => {
         const $item = $(item);
+        const setLabelVal = (key) => { res[key] = $item.find('li').first().text().trim(); };
         const label = $item.prev('label').text();
         if (label && label.length > 0) {
-          if (label.startsWith(/Full\s+Name/i)) res.Name = $item.find('li').first().text().trim();
-          else if (label.startsWith(/Title/i)) res.Role = $item.find('li').first().text().trim();
-          else if (label.startsWith(/Primary\s+E.?Mail\s+Address/i)) res.Email = $item.find('li').first().text().trim();
+          if (/Full\s+Name/i.test(label)) setLabelVal('Name');
+          else if (/Title/i.test(label)) setLabelVal('Role');
+          else if (/Primary\s+E.?Mail\s+Address/i.test(label)) setLabelVal('Email');
         }
       });
 
       return res;
     });
-    console.log(arrayData);
+
     embedOrgChart(arrayData, container);
   }
 });

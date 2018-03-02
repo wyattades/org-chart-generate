@@ -18,7 +18,7 @@ const formatLegend = ({ Name = '', Role = '', Email = '', ImageURL = '', Link = 
 <div>\
 <p><strong>${Name}</strong></p>\
 <p><em>${Role}</em></p>\
-${Email ? `<p><a class="orgchart-legend-email" href="mailto:${Email}">${Email}</a></p>` : ''}\
+${Email ? `<p class="orgchart-legend-email"><a href="mailto:${Email}">${Email}</a></p>` : ''}\
 ${Link ? `<a class="orgchart-legend-link" href="${Link}" title="${Name} Account Page"></a>` : ''}\
 </div>`;
 };
