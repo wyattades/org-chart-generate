@@ -6,7 +6,8 @@
   
   width: 100%;
   height: 700px;
-  background-color: #EEE;
+  // background-color: #EEE;
+  border: 1px solid rgb(187, 187, 187);
   overflow: auto;
   cursor: pointer;
   cursor: -webkit-grab;  
@@ -27,6 +28,7 @@
 }
 
 .google-visualization-orgchart-linenode {
+  /* Override Google linenode defaults */
   border-width: 2px !important;
   border-color: #00458c !important;
 }
@@ -37,6 +39,9 @@
   padding: 48px;
   margin: 0 auto;
   width: auto;
+  tr {
+    background-color: transparent !important;
+  }
 }
 
 .orgchart-node, .orgchart-legend {
