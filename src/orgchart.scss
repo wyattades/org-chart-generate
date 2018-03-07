@@ -121,10 +121,8 @@
 
   .orgchart-legend-img {    
     position: relative;
-    // flex-basis: 140px;
-    flex-basis: 128px;
-    min-width: 128px;
-    flex: 1;
+    width: 128px;
+    min-width: 128px;    
     min-height: 128px;
     overflow: hidden;
     border-radius: 4px 0 0 4px;
@@ -141,7 +139,7 @@
 
   .orgchart-legend-email {
     line-height: 16px;   
-    font-size: 14px;    
+    font-size: 14px;   
     a {
       color: #999;
       text-decoration: none;          
