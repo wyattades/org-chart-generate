@@ -1,16 +1,19 @@
 .orgchart {
-  -webkit-user-select: none;       
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
   
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
-  height: 700px;
+  height: 100%;
+
+  overflow: auto;  
+
   // background-color: #EEE;
   border: 1px solid rgb(187, 187, 187);
-  overflow: auto;
+  
   cursor: pointer;
   cursor: -webkit-grab;  
+  user-select: none;  
 
   &:active {
     cursor: pointer;
@@ -47,9 +50,6 @@
 .orgchart-node, .orgchart-legend {
   font-family: "Segoe UI", Arial, sans-serif;      
   
-  -webkit-user-select: text;       
-  -moz-user-select: text;
-  -ms-user-select: text;
   user-select: text;
 
   background-image: none;
@@ -110,16 +110,33 @@
   p {
     text-align: left !important;    
     margin: 0;  
-    margin-bottom: 8px;
-    &:last-of-type {
-      margin-bottom: 0;
+    &:not(:first-of-type):not(:last-of-type) {
+      margin-bottom: 8px;
     }
   }
 
-  img {    
-    width: 140px;
-    height: 100%;
+  .orgchart-legend-role {
+    font-size: 16px;
+  }
+
+  .orgchart-legend-img {    
+    position: relative;
+    // flex-basis: 140px;
+    flex-basis: 128px;
+    min-width: 128px;
+    flex: 1;
+    min-height: 128px;
+    overflow: hidden;
     border-radius: 4px 0 0 4px;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: auto;
+      transform: translateX(-50%);
+      height: 100%;
+    }
   }
 
   .orgchart-legend-email {
@@ -132,6 +149,12 @@
         text-decoration: underline;      
       }
     }
+  }
+
+  .orgchart-legend-otherinfo {
+    font-size: 14px;
+    overflow: unset;
+    text-overflow: unset;
   }
 
   .orgchart-legend-link {

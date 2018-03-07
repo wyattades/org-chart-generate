@@ -13,11 +13,12 @@ const formatData = ({ Name = '', Role = '' }) => {
 <p><em>${Role}</em></p>`;
 };
 
-const formatLegend = ({ Name = '', Role = '', Email = '', ImageURL = '', Link = '' }) => {
-  return `${ImageURL ? `<img src="${ImageURL}" alt="${Name}">` : ''}\
+const formatLegend = ({ Name = '', Role = '', Email = '', ImageURL = '', Link = '', OtherInfo = '' }) => {
+  return `${ImageURL ? `<div class="orgchart-legend-img"><img src="${ImageURL}" alt="${Name}"></div>` : ''}\
 <div>\
 <p><strong>${Name}</strong></p>\
-<p><em>${Role}</em></p>\
+${Role ? `<p class="orgchart-legend-role"><em>${Role}</em></p>` : ''}\
+${OtherInfo ? `<p class="orgchart-legend-otherinfo">${OtherInfo}</p>` : ''}\
 ${Email ? `<p class="orgchart-legend-email"><a href="mailto:${Email}">${Email}</a></p>` : ''}\
 ${Link ? `<a class="orgchart-legend-link" href="${Link}" title="${Name} Account Page"></a>` : ''}\
 </div>`;
@@ -49,6 +50,7 @@ module.exports = (arrayData, element) => {
   // Remove any existing children
   while (parent.firstChild) parent.removeChild(parent.firstChild);
   parent.style.position = 'relative';
+  parent.style.height = '700px';
 
   const el = document.createElement('div');
   el.classList.add('dragscroll', 'orgchart');
