@@ -7,15 +7,18 @@ const source = require('vinyl-source-stream');
 const browserify = require('browserify');
 const es = require('event-stream');
 
+let debug = false;
+
 gulp.task('js', () => {
   const tasks = ['orgchart.js', 'orgchartCSV.js', 'orgchartDrupal7.js', 'orgchartDrupal8.js']
   .map((entry, i) => {
-    return browserify('./src/' + entry, i < 2 ? { standalone: 'embedOrgChart' } : {})
+    let res = browserify('./src/' + entry, i < 2 ? { standalone: 'embedOrgChart' } : {})
       .bundle()
-      .pipe(source(entry)) 
-      .pipe(streamify(uglify()))
-      .pipe(gulp.dest('./dist/'))
+      .pipe(source(entry));
+    if (!debug) res = res.pipe(streamify(uglify()));
+    res = res.pipe(gulp.dest('./dist/'))
       .on('error', console.error);
+    return res;
   });
 
   return es.merge.apply(null, tasks);
@@ -30,6 +33,7 @@ gulp.task('css', () => {
 });
 
 gulp.task('watch', () => {
+  debug = true;
   gulp.watch('./src/*', ['js', 'css']);
 });
 

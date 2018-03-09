@@ -5,10 +5,13 @@
   },
   "dependencies": {
     "dragscroll": "0.0.8",
+    "jquery": "^3.3.1",
+    "jquery.panzoom": "^3.2.2",
     "papaparse": "^4.3.7"
   },
   "devDependencies": {
     "browserify": "^16.1.0",
+    "browserify-shim": "^3.8.14",
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.9.2",
@@ -16,5 +19,13 @@
     "gulp-streamify": "^1.0.2",
     "gulp-uglify-es": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "./node_modules/jquery/dist/jquery.js": "jQuery"
   }
 }

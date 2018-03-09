@@ -1,7 +1,12 @@
-const dragscroll = require('dragscroll');
+// const $ = require('jquery');
+// require('jquery.panzoom');
+// const dragscroll = require('dragscroll');
+
+// if (!$)
+//   throw new Error('Orgchart: Must include jquery');
 
 if (!window.google || !window.google.charts)
-  throw new Error('Orgchart: Must include google script loader: ' + 
+  throw new Error('Orgchart: Must include google charts script loader: ' + 
     'https://www.gstatic.com/charts/loader.js');
 
 google.charts.load('current', { packages: ['orgchart'] });
@@ -13,7 +18,7 @@ const formatData = ({ Name = '', Role = '' }) => {
 <p><em>${Role}</em></p>`;
 };
 
-const formatLegend = ({ Name = '', Role = '', Email = '', ImageURL = '', Link = '', OtherInfo = '' }) => {
+const formatLegend = ({ Name = '', Role, Email, ImageURL, Link, OtherInfo }) => {
   return `${ImageURL ? `<div class="orgchart-legend-img"><img src="${ImageURL}" alt="${Name}"></div>` : ''}\
 <div>\
 <p><strong>${Name}</strong></p>\
@@ -52,18 +57,22 @@ module.exports = (arrayData, element) => {
   parent.style.position = 'relative';
   parent.style.height = '700px';
 
-  const el = document.createElement('div');
-  el.classList.add('dragscroll', 'orgchart');
-  parent.appendChild(el);
+  const container = document.createElement('div');
+  container.classList.add('dragscroll', 'orgchart');
+  parent.appendChild(container);
+
+  // const panzoom = document.createElement('div');
+  // panzoom.classList.add('orgchart-panzoom');
+  // container.appendChild(panzoom);
 
   const legend = document.createElement('div');
   legend.classList.add('orgchart-legend', 'disabled');
-  parent.appendChild(legend);
+  parent.appendChild(legend); 
 
   // Perform validity checks on the given data
 
   if (!arrayData || arrayData.length === 0) {
-    el.classList.add('invalid-data-provided');
+    container.classList.add('invalid-data-provided');
     console.error('Orgchart Error: undefined or empty user data provided');
     return;
   }
@@ -112,7 +121,7 @@ has undefined manager '${manager}'`);
       }),
     ]);
 
-    const chart = new google.visualization.OrgChart(el);
+    const chart = new google.visualization.OrgChart(container);
 
     // Handle selection and mouse hover
     google.visualization.events.addListener(chart, 'select', () => {
@@ -137,8 +146,21 @@ has undefined manager '${manager}'`);
       size: 'large',
     });
 
-    // Have to reset dragscroll module so it can find our orgchart DOM element
-    dragscroll.reset();
+    const chartEl = container.children[0];
+    
+    chartEl.style.transformOrigin = 'top left';
+
+    // Resize chart to fit parent, and center it in parent
+    const scaleToFit = () => {
+      const ratio = Math.min((container.offsetWidth - 2) / chartEl.offsetWidth,
+          (container.offsetHeight - 2) / chartEl.offsetHeight);
+      const marginLeft = (container.offsetWidth - (chartEl.offsetWidth * ratio)) / 2;
+      if (ratio < 1) chartEl.style.transform = `scale(${ratio}) translate(${marginLeft}px)`;      
+    };
+
+    scaleToFit();
+    window.addEventListener('resize', scaleToFit);
+
   })
   .catch(console.error);
 };

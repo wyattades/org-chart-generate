@@ -6,19 +6,12 @@
   width: 100%;
   height: 100%;
 
-  overflow: auto;  
+  overflow: hidden;
 
   // background-color: #EEE;
   border: 1px solid rgb(187, 187, 187);
-  
-  cursor: pointer;
-  cursor: -webkit-grab;  
+    
   user-select: none;  
-
-  &:active {
-    cursor: pointer;
-    cursor: -webkit-grabbing;
-  }
 
   &.invalid-data-provided::after {
     display: block;
@@ -40,7 +33,7 @@
   /* Override drupal table defaults */
   border-collapse: separate;  
   padding: 48px;
-  margin: 0 auto;
+  margin: 0;
   width: auto;
   tr {
     background-color: transparent !important;
