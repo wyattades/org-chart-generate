@@ -154,8 +154,13 @@ has undefined manager '${manager}'`);
     const scaleToFit = () => {
       const ratio = Math.min((container.offsetWidth - 2) / chartEl.offsetWidth,
           (container.offsetHeight - 2) / chartEl.offsetHeight);
-      const marginLeft = (container.offsetWidth - (chartEl.offsetWidth * ratio)) / 2;
-      if (ratio < 1) chartEl.style.transform = `scale(${ratio}) translate(${marginLeft}px)`;      
+      if (ratio < 1) {
+        chartEl.style.transform = `scale(${ratio})`;
+      }
+
+      const marginLeft = container.offsetWidth / 2 - (chartEl.offsetWidth * (ratio < 1 ? ratio : 1) / 2);
+      if (marginLeft >= 0) chartEl.style.marginLeft = `${marginLeft}px`;
+      
     };
 
     scaleToFit();

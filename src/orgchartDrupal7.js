@@ -3,8 +3,8 @@ const embedOrgChart = require('./orgchart');
 const $ = window.jQuery;
 
 $(() => {  
-  const userdata = document.querySelector('.node-organization-chart #orgchart-userdata');
-  const container = document.querySelector('.node-organization-chart #orgchart-container');
+  const userdata = document.querySelector('.node-orgchart #orgchart-userdata');
+  const container = document.querySelector('.node-orgchart #orgchart-container');
 
   if (userdata && container) {
     
@@ -19,9 +19,8 @@ $(() => {
 
       const res = {
         EmployeeID,
-        ManagerID: $el.find('.field-name-field-organization-chart-manager .field-item').first().text().trim(),
-        OtherInfo: $el.find('.field-name-field-extra-information .field-item').first().text(),
-        Role: $profile.find('.field-name-field-role .field-item').first().text(),
+        ManagerID: $el.find('.field-name-field-manager .field-item').first().text().trim(),
+        OtherInfo: $el.find('.field-name-field-extra-info .field-item').first().text(),
         ImageURL: $profile.find('.field-name-field-image .field-item img').first().attr('src'),
         Link: `/user/${EmployeeID}`,
       };
