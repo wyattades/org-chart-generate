@@ -1,9 +1,3 @@
-// const $ = require('jquery');
-// require('jquery.panzoom');
-// const dragscroll = require('dragscroll');
-
-// if (!$)
-//   throw new Error('Orgchart: Must include jquery');
 
 if (!window.google || !window.google.charts)
   throw new Error('Orgchart: Must include google charts script loader: ' + 
@@ -41,9 +35,7 @@ const getElement = (el) => {
 module.exports = (arrayData, element) => {
 
   // Local variables:
-
   let selected = null;
-  let hovered = null;
 
   // Verify given element
   const parent = getElement(element);
@@ -58,12 +50,8 @@ module.exports = (arrayData, element) => {
   parent.style.height = '700px';
 
   const container = document.createElement('div');
-  container.classList.add('dragscroll', 'orgchart');
+  container.classList.add('orgchart');
   parent.appendChild(container);
-
-  // const panzoom = document.createElement('div');
-  // panzoom.classList.add('orgchart-panzoom');
-  // container.appendChild(panzoom);
 
   const legend = document.createElement('div');
   legend.classList.add('orgchart-legend', 'disabled');
@@ -137,21 +125,11 @@ has undefined manager '${manager}'`);
       setLegend(false, null);
     });
 
-    // Draw charts
-    chart.draw(data, {
-      allowHtml: true,
-      selectedNodeClass: 'orgchart-node-selected',
-      nodeClass: 'orgchart-node',
-      allowCollapse: true,
-      size: 'large',
-    });
-
-    const chartEl = container.children[0];
-    
-    chartEl.style.transformOrigin = 'top left';
-
     // Resize chart to fit parent, and center it in parent
     const scaleToFit = () => {
+      const chartEl = container.children[0];
+      chartEl.style.transformOrigin = 'top left';
+
       const ratio = Math.min((container.offsetWidth - 2) / chartEl.offsetWidth,
           (container.offsetHeight - 2) / chartEl.offsetHeight);
       if (ratio < 1) {
@@ -160,12 +138,21 @@ has undefined manager '${manager}'`);
 
       const marginLeft = container.offsetWidth / 2 - (chartEl.offsetWidth * (ratio < 1 ? ratio : 1) / 2);
       if (marginLeft >= 0) chartEl.style.marginLeft = `${marginLeft}px`;
-      
     };
 
-    scaleToFit();
     window.addEventListener('resize', scaleToFit);
+    google.visualization.events.addListener(chart, 'collapse', scaleToFit);
 
+    google.visualization.events.addListener(chart, 'ready', scaleToFit);
+
+    // Draw charts
+    chart.draw(data, {
+      allowHtml: true,
+      selectedNodeClass: 'orgchart-node-selected',
+      nodeClass: 'orgchart-node',
+      allowCollapse: true,
+      size: 'large',
+    });
   })
   .catch(console.error);
 };
