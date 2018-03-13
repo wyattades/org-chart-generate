@@ -7,15 +7,15 @@ google.charts.load('current', { packages: ['orgchart'] });
 
 // Helper functions:
 
-const formatData = ({ Name = '', Role = '' }) => {
-  return `<p><strong>${Name}</strong></p>\
+const formatData = ({ EmployeeID, Name, Role = '' }) => {
+  return `<p><strong>${Name || EmployeeID}</strong></p>\
 <p><em>${Role}</em></p>`;
 };
 
-const formatLegend = ({ Name = '', Role, Email, ImageURL, Link, OtherInfo }) => {
+const formatLegend = ({ EmployeeID, Name, Role, Email, ImageURL, Link, OtherInfo }) => {
   return `${ImageURL ? `<div class="orgchart-legend-img"><img src="${ImageURL}" alt="${Name}"></div>` : ''}\
 <div>\
-<p><strong>${Name}</strong></p>\
+<p><strong>${Name || EmployeeID}</strong></p>\
 ${Role ? `<p class="orgchart-legend-role"><em>${Role}</em></p>` : ''}\
 ${OtherInfo ? `<p class="orgchart-legend-otherinfo">${OtherInfo}</p>` : ''}\
 ${Email ? `<p class="orgchart-legend-email"><a href="mailto:${Email}">${Email}</a></p>` : ''}\
@@ -100,10 +100,10 @@ has undefined manager '${manager}'`);
         { label: 'ManagerID', type: 'string' },
         { label: 'ToolTip', type: 'string' },
       ],
-      ...arrayData.map(({ EmployeeID, ManagerID, ...employeeInfo }) => {
+      ...arrayData.map((employeeInfo) => {
         return [
-          { v: EmployeeID, f: formatData(employeeInfo) },
-          ManagerID,
+          { v: employeeInfo.EmployeeID, f: formatData(employeeInfo) },
+          employeeInfo.ManagerID,
           'Double click to collapse',
         ];
       }),
@@ -129,9 +129,9 @@ has undefined manager '${manager}'`);
     const scaleToFit = () => {
       const chartEl = container.children[0];
       chartEl.style.transformOrigin = 'top left';
-
-      const ratio = Math.min((container.offsetWidth - 2) / chartEl.offsetWidth,
-          (container.offsetHeight - 2) / chartEl.offsetHeight);
+      
+      const ratio = Math.min(container.clientWidth / chartEl.clientWidth,
+          container.clientHeight / chartEl.clientHeight);
       if (ratio < 1) {
         chartEl.style.transform = `scale(${ratio})`;
       }
@@ -142,7 +142,6 @@ has undefined manager '${manager}'`);
 
     window.addEventListener('resize', scaleToFit);
     google.visualization.events.addListener(chart, 'collapse', scaleToFit);
-
     google.visualization.events.addListener(chart, 'ready', scaleToFit);
 
     // Draw charts
