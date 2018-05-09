@@ -12,7 +12,7 @@ Generate beautiful and intuitive Org Charts for your webpage.
 2. Add this stylesheet: https://cdn.rawgit.com/wyattades/org-chart-module/77cf2856/dist/orgchart.css
 
 org-chart-module supports 2 modes for passing orgchart data:  
-- **Passing a url to a CSV file**
+- **Passing a CSV file url**
   1. Add the following script: https://cdn.rawgit.com/wyattades/org-chart-module/77cf2856/dist/orgchartCSV.js
   2. After the document loads, call `embedOrgChart(<csv-file-url>, <element-OR-element-id>)` to embed the org chart
 - **Passing a raw data array**
