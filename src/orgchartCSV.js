@@ -8,9 +8,10 @@ const parseCsv = (url) => new Promise((resolve, reject) => {
     header: true,
     complete: (result) => {
       if (result.data.length === 0 ||
-          result.data[0].length === 0 ||
-          result.errors.length > 0) {
-        reject('OrgChart: failed to parse data:', result.error[0]);
+          result.data[0].length === 0) {
+        reject('OrgChart: must provide nonempty data');            
+      } else if (result.errors.length > 0) {
+        reject('OrgChart: failed to parse data:' + result.errors[0]);
       } else {
         resolve(result.data);
       }

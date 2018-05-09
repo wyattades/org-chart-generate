@@ -7,8 +7,8 @@ google.charts.load('current', { packages: ['orgchart'] });
 
 // Helper functions:
 
-const formatData = ({ EmployeeID, Name, Role = '' }) => {
-  return `<p><strong>${Name || EmployeeID}</strong></p>\
+const formatData = ({ EmployeeID, Name, Role = '', OtherManagerID }) => {
+  return `<p id="${EmployeeID}-eid"><strong>${Name || EmployeeID}</strong></p>\
 <p><em>${Role}</em></p>`;
 };
 
@@ -29,6 +29,26 @@ const getElement = (el) => {
       (el && typeof el === 'object' && el !== null && 
       el.nodeType === 1 && typeof el.nodeName === 'string')) return el;
   else return null;
+};
+
+const MIN_X = 100;
+const START_H = 8;
+// x1,y1 is Employee and x2,y2 is OtherManager
+const drawLine = (container, x1, y1, x2, y2) => {
+  const points = [];
+  const addPoint = (x, y) => points.push(`${x},${y}`);
+
+  const midX = (x1 + x2) / 2;
+  addPoint(x1, y1);
+  addPoint(x1, y1 - START_H);
+  addPoint(midX, y1 - START_H);
+  addPoint(midX, y2 + START_H);
+  addPoint(x2, y2 + START_H);  
+  addPoint(x2, y2);
+
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  line.setAttribute('points', points.join(' '));
+  container.appendChild(line);
 };
 
 // embedOrgChart
@@ -55,7 +75,11 @@ module.exports = (arrayData, element) => {
 
   const legend = document.createElement('div');
   legend.classList.add('orgchart-legend', 'disabled');
-  parent.appendChild(legend); 
+  parent.appendChild(legend);
+
+  const otherManagers = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  otherManagers.id = 'other-managers';
+  parent.appendChild(otherManagers);
 
   // Perform validity checks on the given data
 
@@ -138,6 +162,16 @@ has undefined manager '${manager}'`);
 
       const marginLeft = container.offsetWidth / 2 - (chartEl.offsetWidth * (ratio < 1 ? ratio : 1) / 2);
       if (marginLeft >= 0) chartEl.style.marginLeft = `${marginLeft}px`;
+
+      while(otherManagers.firstChild) otherManagers.removeChild(otherManagers.firstChild);
+      const b = otherManagers.getBoundingClientRect();
+      for (const { EmployeeID, OtherManagerID } of arrayData) {
+        if (OtherManagerID) {
+          const e1 = document.getElementById(`${EmployeeID}-eid`).parentElement.getBoundingClientRect();
+          const e2 = document.getElementById(`${OtherManagerID}-eid`).parentElement.getBoundingClientRect();
+          drawLine(otherManagers, e1.left + e1.width / 2 - b.left, e1.top - b.top, e2.left + e2.width / 2 - b.left, e2.top + e2.height - b.top);
+        }
+      }
     };
 
     window.addEventListener('resize', scaleToFit);
@@ -152,6 +186,7 @@ has undefined manager '${manager}'`);
       allowCollapse: true,
       size: 'large',
     });
+
   })
   .catch(console.error);
 };

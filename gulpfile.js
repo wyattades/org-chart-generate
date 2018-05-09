@@ -34,6 +34,7 @@ gulp.task('css', () => {
 
 gulp.task('watch', () => {
   debug = true;
+  gulp.start('js', 'css');
   gulp.watch('./src/*', ['js', 'css']);
 });
 
