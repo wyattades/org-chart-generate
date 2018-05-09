@@ -15,6 +15,8 @@ $(() => {
         EmployeeID: Link,
         ManagerID: $el.find('.paragraph-sections > .field--name-field-manager article.profile')
             .first().attr('about'),
+        OtherManagerID: $el.find('.paragraph-sections > .field--name-field-dotted-line-manager article.profile')
+            .first().attr('about'),
         OtherInfo: $el.find('.paragraph-sections > .field--name-field-extra-information').first().text(),        
         Name: $user.find('.field--name-field-name .field__item').first().text(),
         Role: $user.find('.field--name-field-role .field__item').first().text(),

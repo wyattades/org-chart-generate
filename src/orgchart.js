@@ -32,7 +32,7 @@ const getElement = (el) => {
 };
 
 const MIN_X = 100;
-const START_H = 8;
+const START_H = 10;
 // x1,y1 is Employee and x2,y2 is OtherManager
 const drawLine = (container, x1, y1, x2, y2) => {
   const points = [];
@@ -92,11 +92,16 @@ module.exports = (arrayData, element) => {
   const persons = {};
   for (const rowData of arrayData) persons[rowData.EmployeeID] = true;
   for (const rowData of arrayData) {
-    const manager = rowData.ManagerID;
-    if (manager && !(manager in persons)) {
-      console.error(`Orgchart Error: employee '${rowData.EmployeeID}' \
-has undefined manager '${manager}'`);
+    const { EmployeeID, ManagerID, OtherManagerID } = rowData;
+    if (ManagerID && !(ManagerID in persons)) {
+      console.error(`Orgchart Error: employee '${EmployeeID}' \
+          has undefined manager '${ManagerID}'`);
       delete rowData.ManagerID;
+    }
+    if (OtherManagerID && !(OtherManagerID in persons)) {
+      console.error(`Orgchart Error: employee '${EmployeeID}' \
+          has undefined other-manager '${OtherManagerID}'`);
+      delete rowData.OtherManagerID;
     }
   }
 
