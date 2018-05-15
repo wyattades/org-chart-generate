@@ -1,3 +1,4 @@
+/* global google */
 
 if (!window.google || !window.google.charts)
   throw new Error('Orgchart: Must include google charts script loader: ' + 
@@ -7,7 +8,7 @@ google.charts.load('current', { packages: ['orgchart'] });
 
 // Helper functions:
 
-const formatData = ({ EmployeeID, Name, Role = '', OtherManagerID }) => {
+const formatData = ({ EmployeeID, Name, Role = '' }) => {
   return `<p id="${EmployeeID}-eid"><strong>${Name || EmployeeID}</strong></p>\
 <p><em>${Role}</em></p>`;
 };
@@ -31,24 +32,40 @@ const getElement = (el) => {
   else return null;
 };
 
-const MIN_X = 100;
-const START_H = 10;
-// x1,y1 is Employee and x2,y2 is OtherManager
-const drawLine = (container, x1, y1, x2, y2) => {
+// e1 is Employee and e2 is OtherManager
+const drawLine = (container, scale, e1, e2) => {
   const points = [];
   const addPoint = (x, y) => points.push(`${x},${y}`);
 
-  const midX = (x1 + x2) / 2;
-  addPoint(x1, y1);
-  addPoint(x1, y1 - START_H);
-  addPoint(midX, y1 - START_H);
-  addPoint(midX, y2 + START_H);
-  addPoint(x2, y2 + START_H);  
-  addPoint(x2, y2);
+  const margin = 14 * scale;
+  const offset = 10 * scale;
 
-  const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-  line.setAttribute('points', points.join(' '));
-  container.appendChild(line);
+  const lesser = e1.x < e2.x;
+
+  const x1 = e1.x + e1.w / 2 + offset * (lesser ? 1 : -1),
+        x2 = e2.x + e2.w / 2 + offset * (lesser ? -1 : 1);
+
+  const midX = lesser ? e1.w + margin : -margin;
+  addPoint(x1, e1.y);
+
+  addPoint(x1, e1.y - margin);
+  addPoint(e1.x + midX, e1.y - margin);
+  addPoint(e1.x + midX, e2.y + e2.h + margin);
+  addPoint(x2, e2.y + e2.h + margin);
+  addPoint(x2, e2.y + e2.h);
+
+  const addShape = (type, attributes) => {
+    const shape = document.createElementNS('http://www.w3.org/2000/svg', type);
+    for (const key in attributes) {
+      shape.setAttribute(key, attributes[key]);      
+    }
+    container.appendChild(shape);
+  };
+
+  // addShape('rect', { x: e1.x, y: e1.y, width: e1.w, height: e1.h, stroke: 'red' });
+  // addShape('rect', { x: e2.x, y: e2.y, width: e2.w, height: e2.h, stroke: 'blue' });
+  
+  addShape('polyline', { points: points.join(' ') });
 };
 
 // embedOrgChart
@@ -159,22 +176,39 @@ module.exports = (arrayData, element) => {
       const chartEl = container.children[0];
       chartEl.style.transformOrigin = 'top left';
       
-      const ratio = Math.min(container.clientWidth / chartEl.clientWidth,
+      // Scale orgchart to fit in container
+      const scale = Math.min(container.clientWidth / chartEl.clientWidth,
           container.clientHeight / chartEl.clientHeight);
-      if (ratio < 1) {
-        chartEl.style.transform = `scale(${ratio})`;
+      if (scale < 1) {
+        chartEl.style.transform = `scale(${scale})`;
       }
 
-      const marginLeft = container.offsetWidth / 2 - (chartEl.offsetWidth * (ratio < 1 ? ratio : 1) / 2);
+      // Center orgchart horizontally
+      const marginLeft = container.offsetWidth / 2 - (chartEl.offsetWidth * (scale < 1 ? scale : 1) / 2);
       if (marginLeft >= 0) chartEl.style.marginLeft = `${marginLeft}px`;
 
+      // Clear SVG of previous dotted lines
       while(otherManagers.firstChild) otherManagers.removeChild(otherManagers.firstChild);
-      const b = otherManagers.getBoundingClientRect();
+
+      // Get all node element bounds
+      const b = otherManagers.getBoundingClientRect();      
+      const $nodes = document.getElementsByClassName('orgchart-node');
+      const nodes = Array.prototype.reduce.call($nodes, (obj, node) => {
+        const id = node.firstChild && node.firstChild.id && node.firstChild.id.replace('-eid', '');
+        if (id) {
+          const e = node.getBoundingClientRect();
+          obj[id] = { x: e.left - b.left, y: e.top - b.top, w: e.width, h: e.height };
+        }
+        return obj;
+      }, {});
+
       for (const { EmployeeID, OtherManagerID } of arrayData) {
         if (OtherManagerID) {
-          const e1 = document.getElementById(`${EmployeeID}-eid`).parentElement.getBoundingClientRect();
-          const e2 = document.getElementById(`${OtherManagerID}-eid`).parentElement.getBoundingClientRect();
-          drawLine(otherManagers, e1.left + e1.width / 2 - b.left, e1.top - b.top, e2.left + e2.width / 2 - b.left, e2.top + e2.height - b.top);
+          const e1 = nodes[EmployeeID],
+                e2 = nodes[OtherManagerID];
+          if (e1 && e2) {
+            drawLine(otherManagers, scale, e1, e2);
+          }
         }
       }
     };

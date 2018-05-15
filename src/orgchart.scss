@@ -31,7 +31,7 @@ $background: none;
 
 .google-visualization-orgchart-linenode {
   /* Override Google linenode defaults */
-  border-width: 2px !important;
+  border-width: 4px !important;
   border-color: $linenode !important;
 }
 
@@ -172,9 +172,13 @@ $background: none;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  * {
+    fill: none;    
+  }
   polyline {
-    fill: none;
     stroke: $border;
-    stroke-dasharray: 5, 5;
+    stroke-width: 2px;
+    stroke: rgba(0, 0, 0, 0.397);
+    stroke-dasharray: 5, 4;
   }
 }
